@@ -1,7 +1,7 @@
 const itemController = require('../DL/item.controller')
 
-async function getAllItems(filter={}, sortCriteria) {
-    return await itemController.read(filter, sortCriteria)
+async function getAllItems(filter={}, sortCriteria, skip, limit) {
+    return await itemController.read(filter, sortCriteria, skip, limit)
 }
 
 async function getItem(_id) {

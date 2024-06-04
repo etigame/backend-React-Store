@@ -4,8 +4,8 @@ async function create(newItem) {
     return await itemModel.create(newItem)
 }
 
-async function read(filter={}, sortCriteria) {
-    return await itemModel.find(filter).sort(sortCriteria)
+async function read(filter={}, sortCriteria, skip, limit) {
+    return await itemModel.find(filter).sort(sortCriteria).skip(skip).limit(limit)
 }
 
 async function readOne(filter) {

@@ -1,13 +1,14 @@
-let userController = require('../DL/user.controller')
+const userController = require('../DL/user.controller')
+const bcrypt = require('bcrypt')
 
 async function getAllUsers(filter={}) {
   return await userController.read(filter)
 }
 
-async function getUser(email) {
+async function getUser(email, select) {
   // validation tests
   if (!email) throw {message: 'Invalid email'} // here i choose not to send code error
-  const user = await userController.readOne({email})
+  const user = await userController.readOne({email}, select)
   if (!user) throw {code: 404, message: 'User is not exist'} // this is the Error object, here i choose to send code error
 
   return user
@@ -29,8 +30,11 @@ async function addUser(newUser) {
   const user = await userController.readOne({email})
   if (user) throw {message: 'User already exist'}
   if (!email.includes('@')) throw {message: 'Address is not valid'}
-  if (password.length < 8) throw {message: 'Password is not valid'}
+  if (password.length < 6) throw {message: 'Password is not valid'}
   if (!fullName.includes(' ')) throw {message: 'Full name is not valid'}
+
+  const hashedPassword = await bcrypt.hash(password, 10)
+  newUser.password = hashedPassword
 
   return await userController.create(newUser)
 }

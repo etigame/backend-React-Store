@@ -5,13 +5,13 @@ const {checkRequestTime} = require('../middleware/item.middleware')
 
 router.get('/', checkRequestTime , async (req, res) => {
   try {
-    const {category, subCategory, minPrice, maxPrice, name, sortField, sortOrder} = req.query
+    let {category, subCategory, minPrice, maxPrice, name, sortField, sortOrder, skip, limit} = req.query
 
     // after destructing the query, i build the filter object to ensure that mongoDB find method won't get undefined values:
     let filter = {}
     if (category) filter.category = category
     if (subCategory) filter.subCategory = subCategory
-    if (minPrice != null && maxPrice != null) filter.price = {$gte: minPrice, $lte: maxPrice}
+    if (minPrice != null && maxPrice != null) filter.price = {$gte: Number(minPrice), $lte: Number(maxPrice)}
     else if (minPrice != null) filter.price = {$gte: Number(minPrice)}
     else if (maxPrice != null) filter.price = {$lte: Number(maxPrice)}
     if (name) filter.name = {$regex: new RegExp(name, 'i')}
@@ -24,8 +24,11 @@ router.get('/', checkRequestTime , async (req, res) => {
     } else {
       sortCriteria.name = 1 // default sorting
     }
+
+    if (skip) skip = Number(skip)
+    if (limit) limit = Number(limit)
     
-    const items = await itemService.getAllItems(filter, sortCriteria)
+    const items = await itemService.getAllItems(filter, sortCriteria, skip, limit)
     res.send(items)
   } catch(err) {
     res.status(err.code || 400).send(err.message)

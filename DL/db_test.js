@@ -671,8 +671,8 @@ const go = async () => {
     // const itemModel = require('./item.model')
     // await itemModel.create(items) // create is mongoose method to create the fake data to the DB
 
-    const orderModel = require('./order.model')
-    await orderModel.create(orders)
+    // const orderModel = require('./order.model')
+    // await orderModel.create(orders)
 
     console.log("@@@@@ Done @@@@@");
 }
